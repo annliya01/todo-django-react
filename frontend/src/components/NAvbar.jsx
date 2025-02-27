@@ -15,9 +15,10 @@ const handleLogout = () => {
         <nav className="navbar">
             <h2 className="navname">To Do List</h2>
             <div className="nav-button">
+                <button onClick={() => navigate("/home")} className="btn2">Home</button>
+                <button onClick={() => navigate("/todo")} className="btn2">Todo</button>
                 {!token ?(
                     <>
-                    <button onClick={() => navigate("/todo")} className="btn2">Todo</button>
                     <button onClick={() => navigate("/login")} className="btn2">Login</button>
                     <button onClick={() => navigate("/signup")} className="btn2">Signup</button>
                     </>

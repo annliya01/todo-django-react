@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchTasks, createTask, updateTask, deleteTask } from "../api";
 import '../style.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AuthContext from "../context/AuthContext";
 
 const ToDoList = () => {
+    const { token } = useContext(AuthContext);
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,10 +19,7 @@ const ToDoList = () => {
 
     const navigate = useNavigate(); 
 
-    useEffect(() => {
-        loadTasks();
-    }, []);
-
+   
     const handleUnauthorized = () => {
         localStorage.removeItem('token'); 
         navigate('/login');
@@ -44,37 +45,51 @@ const ToDoList = () => {
         }
         setLoading(false);
     };
+    useEffect(() => {
+        if(!token){
+            navigate("/login");
+        }else{
+        loadTasks();
+        }
+    }, [token,navigate]);
+
 
     const handleCreateTask = async () => {
         if (!newTask.title || !newTask.description) {
-            alert("Title and Description are required!");
+            toast.error("Title and Description are required!");
             return;
         }
         try {
             await createTask(newTask);
             setNewTask({ title: "", description: "", status: "Pending" });
             loadTasks(currentPage); 
+            toast.success("Task created successfully!");
         } catch (error) {
             console.error("Error creating task:", error);
             if (error.response && error.response.status === 401) {
                 handleUnauthorized();
+            } else {
+                toast.error("Failed to create task");
             }
         }
     };
 
     const handleUpdateTask = async () => {
         if (!editingTask.title || !editingTask.description) {
-            alert("Title and Description are required!");
+            toast.error("Title and Description are required!");
             return;
         }
         try {
             await updateTask(editingTask.id, editingTask);
             setEditingTask(null);
             loadTasks(currentPage);
+            toast.success("Task updated successfully!");
         } catch (error) {
             console.error("Error updating task:", error);
             if (error.response && error.response.status === 401) {
                 handleUnauthorized();
+            } else {
+                toast.error("Failed to update task");
             }
         }
     };
@@ -84,10 +99,13 @@ const ToDoList = () => {
         try {
             await deleteTask(id);
             loadTasks(currentPage); 
+            toast.success("Task deleted successfully!");
         } catch (error) {
             console.error("Error deleting task:", error);
             if (error.response && error.response.status === 401) {
                 handleUnauthorized();
+            } else {
+                toast.error("Failed to delete task");
             }
         }
     };
@@ -105,7 +123,6 @@ const ToDoList = () => {
     };
 
     return(
-
     <div className="todo-container">
             <div className="task-form-container">
                 <input 
@@ -131,7 +148,7 @@ const ToDoList = () => {
                     placeholder="Priority" 
                     value={editingTask ? editingTask.priority : newTask.priority} 
                     onChange={(e) => {
-                        const value = parseInt(e.target.value, 10) || 1;
+                        const value = e.target.value;
                         editingTask ? setEditingTask({ ...editingTask, priority: value }) : setNewTask({ ...newTask, priority: value });
                     }} 
                 />
@@ -188,13 +205,14 @@ const ToDoList = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5">Notasksfound</td>
+                                    <td colSpan="5">No tasks found</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 )}
             </div>
+            <ToastContainer />
         </div>
     );
 };

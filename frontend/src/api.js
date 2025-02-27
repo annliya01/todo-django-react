@@ -5,6 +5,13 @@ const API_BASE_URL = "http://127.0.0.1:8000";
 export const signup = async (userData) => {
     return axios.post(`${API_BASE_URL}/signup/`, userData);
 };
+export const checkUsername = (username) => {
+    return axios.get(`${API_BASE_URL}/check-username?username=${username}`);
+};
+
+export const checkEmail = (email) => {
+    return axios.get(`${API_BASE_URL}/check-email?email=${email}`);
+};
 
 export const login = async (userData) => {
     return axios.post(`${API_BASE_URL}/login/`, userData);

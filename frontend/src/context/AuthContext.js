@@ -58,12 +58,14 @@ export const AuthProvider = ({ children}) =>{
         const username = decodedUser.username || "User";  
 
         localStorage.setItem("token",newAccess);
+        localStorage.setItem("refresh", newRefresh);
         localStorage.setItem("username",username);
         setToken(newAccess);
+        setRefreshToken(newRefresh);
         setUsername(username);
     };
     const logoutUser = () => {
-        console.log("Logging out...");
+        // console.log("Logging out...");
         localStorage.removeItem("token");
         localStorage.removeItem("refresh");
         localStorage.removeItem("username");

@@ -32,6 +32,26 @@ def get_tokens_for_user(user):
         "access": str(refresh.access_token)
     }
 
+@api_view(["GET"])
+def check_username(request):
+    username = request.query_params.get("username", "").strip()
+    if not username:
+        return Response({"error": "Username is required"}, status=400)
+    
+    if User.objects.filter(username=username).exists():
+        return Response({"taken": True}, status=200)
+    return Response({"taken": False}, status=200)
+
+@api_view(["GET"])
+def check_email(request):
+    email = request.query_params.get("email", "").strip()
+    if not email:
+        return Response({"error": "Email is required"}, status=400)
+    
+    if User.objects.filter(email=email).exists():
+        return Response({"taken": True}, status=200)
+    return Response({"taken": False}, status=200)
+
 @api_view(["POST"])
 def signup(request):
     username = request.data.get("username").strip()
@@ -47,6 +67,8 @@ def signup(request):
    
     if User.objects.filter(username=username).exists():
         return Response({"error": "Username is already taken"}, status=400)
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "Already registered email"}, status=400)
    
     user = User.objects.create_user(username=username, email=email, password=password)
     tokens = get_tokens_for_user(user)
@@ -115,8 +137,7 @@ def reset_password(request, uidb64, token):
 @permission_classes([IsAuthenticated])
 def task_list_create(request):
     if request.method == "GET":
-        # Apply pagination
-        tasks = Task.objects.all().order_by('id')  # Ensure consistent ordering
+        tasks = Task.objects.all().order_by('id')  
         paginator = TaskPagination()
         paginated_tasks = paginator.paginate_queryset(tasks, request)
         serializer = TaskSerializer(paginated_tasks, many=True)

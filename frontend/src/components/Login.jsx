@@ -1,11 +1,13 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { login } from "../api";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
     const [formData, setFormData] = useState({ username: "", password: "" });
-    const { loginUser } = useContext(AuthContext);
+    const { loginUser, token } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -16,25 +18,34 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await login(formData);
-            const newaccess = response.data.access;
-            const username = formData.username;
+            const newAccess = response.data.access;
+            const newRefresh = response.data.refresh;
 
-            loginUser(newaccess,username);
-            navigate("/todo");
+            loginUser(newAccess, newRefresh);
+            
         } catch (error) {
-            console.error("Login Error", error.response? error.response.data:error);
-            alert("Invalid credentials");
+            console.error("Login Error", error.response ? error.response.data : error);
+            toast.error("Invalid credentials");
         }
     };
 
+    useEffect(() => {
+        if (token) {
+            navigate("/todo");
+        }
+    }, [token, navigate]);
+
     return (
-        <form className="formcont" onSubmit={handleSubmit}>
-            <h3 className="form-title">Login</h3>
-            <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-            <button type="submit">Login</button>
-            <p><a href="/forgot-password">Forgot Password?</a></p>
-        </form>
+        <div>
+            <form className="formcont" onSubmit={handleSubmit}>
+                <h3 className="form-title">Login</h3>
+                <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
+                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+                <button type="submit">Login</button>
+                <p><a href="/forgot-password">Forgot Password?</a></p>
+            </form>
+            <ToastContainer />
+        </div>
     );
 };
 
