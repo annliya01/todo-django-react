@@ -137,7 +137,7 @@ def reset_password(request, uidb64, token):
 @permission_classes([IsAuthenticated])
 def task_list_create(request):
     if request.method == "GET":
-        tasks = Task.objects.filter(user=request.user).order_by('id')
+        tasks = Task.objects.filter(user=request.user,is_deleted=False).order_by('id')
         paginator = TaskPagination()
         paginated_tasks = paginator.paginate_queryset(tasks, request)
         serializer = TaskSerializer(paginated_tasks, many=True)
@@ -153,7 +153,7 @@ def task_list_create(request):
 @permission_classes([IsAuthenticated])
 def task_detail(request, pk):
     try:
-        task = Task.objects.get(pk=pk, user=request.user)
+        task = Task.objects.get(pk=pk, user=request.user,is_deleted=False)
     except Task.DoesNotExist:
         return Response({"error": "Task not found"}, status=404)
     
@@ -167,5 +167,6 @@ def task_detail(request, pk):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
     elif request.method == "DELETE":
-        task.delete()
+        task.is_deleted = True
+        task.save()
         return Response({"message": "Task deleted successfully"}, status=204)
