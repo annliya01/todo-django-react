@@ -11,7 +11,7 @@ const ToDoList = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [newTask, setNewTask] = useState({ title: "", description: "", status: "Pending" });
+    const [newTask, setNewTask] = useState({ title: "", description: "", priority:"High",status: "Pending" });
     const [editingTask, setEditingTask] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [nextPage, setNextPage] = useState(null);
@@ -61,7 +61,7 @@ const ToDoList = () => {
         }
         try {
             await createTask(newTask);
-            setNewTask({ title: "", description: "", status: "Pending" });
+            setNewTask({ title: "", description: "",priority:"High", status: "Pending" });
             loadTasks(currentPage); 
             toast.success("Task created successfully!");
         } catch (error) {
@@ -143,15 +143,17 @@ const ToDoList = () => {
                         editingTask ? setEditingTask({ ...editingTask, description: value }) : setNewTask({ ...newTask, description: value });
                     }} 
                 />
-                <input 
-                    type="number" 
-                    placeholder="Priority" 
+                <select  
                     value={editingTask ? editingTask.priority : newTask.priority} 
                     onChange={(e) => {
                         const value = e.target.value;
                         editingTask ? setEditingTask({ ...editingTask, priority: value }) : setNewTask({ ...newTask, priority: value });
                     }} 
-                />
+                >
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
                 <select 
                     value={editingTask ? editingTask.status : newTask.status} 
                     onChange={(e) => {
@@ -172,7 +174,7 @@ const ToDoList = () => {
             <div className="pagination">
                 <button className="pb1" onClick={goToPrevPage} disabled={!prevPage}>Previous</button>
                 <span className="page-no">Page {currentPage}</span>
-                <button className="pb2" onClick={goToNextPage} disabled={!nextPage}>Next</button>
+                <button className="pb1" onClick={goToNextPage} disabled={!nextPage}>Next</button>
             </div>
 
             <div className="task-table-container">

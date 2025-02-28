@@ -15,7 +15,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #380546;
+    background-color: #045a1c;
     color: white;
     padding: 15px 20px;
     position: fixed;
@@ -38,8 +38,8 @@ body {
 
 .btn2 {
     background: white;
-    color: #380546;
-    border: 2px solid #380546;
+    color: #045a1c;
+    border: 2px solid #045a1c;
     padding: 8px 15px;
     cursor: pointer;
     border-radius: 5px;
@@ -49,9 +49,9 @@ body {
 }
 
 .btn2:hover {
-    background: #5c0475;
+    background: #023210;
     color: white;
-    border-color: #5c0475;
+    border-color: #045a1c;
 }
 
 .btn3 {
@@ -85,7 +85,7 @@ body {
     font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #380546;
+    color: #045a1c;
 }
 
 input, select {
@@ -99,7 +99,7 @@ input, select {
 }
 
 input:focus, select:focus {
-    border-color: #5c0475;
+    border-color: #056c22;
     outline: none;
 }
 
@@ -107,7 +107,7 @@ button {
     width: 100%;
     padding: 12px;
     margin-top: 10px;
-    background-color: #380546;
+    background-color: #056c22;
     color: white;
     border: none;
     border-radius: 5px;
@@ -117,7 +117,7 @@ button {
 }
 
 button:hover {
-    background-color: #64127b;
+    background-color: #045a1c;
 }
 
 
@@ -177,7 +177,7 @@ button:hover {
 
 .task-form-container button {
     padding: 10px;
-    background: #5c0475;
+    background: #045a1c;
     color: white;
     border: none;
     cursor: pointer;
@@ -187,7 +187,7 @@ button:hover {
 }
 
 .task-form-container button:hover {
-    background: #380546;
+    background: #023711;
 }
 
 .pagination {
@@ -202,26 +202,34 @@ button:hover {
     position:fixed;
     margin-top: 70px; 
     gap: 70px;
+    font-size: 1rem;
+    font-weight: 600;
+    
 }
 
-.page-no {
-    font-size: 1.2rem;
-    text-align: center;
-    flex-grow: 1;
-}
 
-.pb1, .pb2 {
+.pb1 {
+    max-width: fit-content;
     padding: 10px;
-    background: #5c0475;
+    background: #056c22;
     color: white;
-    border: none;
+    border:#056c22;
     cursor: pointer;
     border-radius: 5px;
     font-size: 1rem;
+    font-weight: 600;
+    max-width: fit-content;
 } 
-
-.pb1:hover, .pb2:hover {
-    background: #380546;
+ 
+.pb1 {
+    background-color: #f1f1f1;
+    color: #056c22;
+    border-radius: 5px;
+  }
+  
+.pb1:hover {
+    background: #033a13;
+    color: #ccc;
 }
 .task-table-container {
     width: 99%;
@@ -247,7 +255,7 @@ button:hover {
 }
 
 .task-table th {
-    background: #5c0475;
+    background: #045a1c;
     color: white;
     position: sticky;
     top:0;
