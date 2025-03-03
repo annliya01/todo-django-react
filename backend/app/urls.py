@@ -11,4 +11,5 @@ urlpatterns = [
     path('tasks/<int:pk>/', task_detail, name='task-detail'),
     path("check-username/", check_username, name="check_username"),
     path("check-email/", check_email, name="check_email"),
+    #path('verify-token/', verify_token, name='verify-token'),
 ]

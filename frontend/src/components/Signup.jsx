@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { signup, checkUsername, checkEmail } from "../api";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";

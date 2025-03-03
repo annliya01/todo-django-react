@@ -17,6 +17,7 @@ from django.utils.html import strip_tags
 from .models import Task
 from .serializers import TaskSerializer
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 class TaskPagination(PageNumberPagination):
     page_size = 5
@@ -65,7 +66,9 @@ def signup(request):
     if User.objects.filter(email=email).exists():
         return Response({"error": "Already registered email"}, status=400)
     
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User(username=username, email=email)
+    user.set_password(password)  
+    user.save()
     tokens = get_tokens_for_user(user)
     return Response({"message": "Registered Successfully", "tokens": tokens}, status=201)
 
@@ -137,11 +140,22 @@ def reset_password(request, uidb64, token):
 @permission_classes([IsAuthenticated])
 def task_list_create(request):
     if request.method == "GET":
-        tasks = Task.objects.filter(user=request.user,is_deleted=False).order_by('id')
+        ordering = request.query_params.get('ordering', 'id')  
+        search_query = request.query_params.get('search', None)  
+
+        tasks = Task.objects.filter(user=request.user, is_deleted=False)
+
+        if search_query:
+            tasks = tasks.filter(
+                Q(title__icontains=search_query) | Q(description__icontains=search_query)
+            )
+
+        tasks = tasks.order_by(ordering)
         paginator = TaskPagination()
         paginated_tasks = paginator.paginate_queryset(tasks, request)
         serializer = TaskSerializer(paginated_tasks, many=True)
         return paginator.get_paginated_response(serializer.data)
+    
     elif request.method == "POST":
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
@@ -170,3 +184,15 @@ def task_detail(request, pk):
         task.is_deleted = True
         task.save()
         return Response({"message": "Task deleted successfully"}, status=204)
+    
+# @api_view(['POST'])
+# def verify_token(request):
+#     token = request.headers.get('Authorization', '').split('Bearer ')[-1]
+
+#     try:
+#         decoded = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+#         return Response({'valid': True}, status=status.HTTP_200_OK)
+#     except jwt.ExpiredSignatureError:
+#         return Response({'valid': False, 'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+#     except jwt.InvalidTokenError:
+#         return Response({'valid': False, 'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -20,9 +20,8 @@ const Login = () => {
             const response = await login(formData);
             const newAccess = response.data.access;
             const newRefresh = response.data.refresh;
-
             loginUser(newAccess, newRefresh);
-            
+            // navigate("/todo");    
         } catch (error) {
             console.error("Login Error", error.response ? error.response.data : error);
             toast.error("Invalid credentials");

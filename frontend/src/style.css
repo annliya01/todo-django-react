@@ -153,11 +153,10 @@ button:hover {
 .task-form-container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color: white;
     padding: 15px;
-    width: 101vw;
-    max-width: 1510px;
+    width: 100%;
     margin-top: 1px; 
     gap: 70px;
     position: fixed;
@@ -189,6 +188,18 @@ button:hover {
 .task-form-container button:hover {
     background: #023711;
 }
+.search-sort-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px;
+    width: 100%;
+    margin-top: 80px; 
+    gap: 70px;
+    position: fixed;
+    z-index: 1000;
+}
 
 .pagination {
     display: flex;
@@ -200,7 +211,7 @@ button:hover {
     background-color: #fff;
     border-radius: 5px;
     position:fixed;
-    margin-top: 70px; 
+    margin-top: 160px; 
     gap: 70px;
     font-size: 1rem;
     font-weight: 600;
@@ -232,9 +243,8 @@ button:hover {
     color: #ccc;
 }
 .task-table-container {
-    width: 99%;
-    max-width: 1550px;
-    margin-top: 150px; 
+    width: 100%;
+    margin-top: 240px; 
     gap: 70px;
     overflow: auto;
     height: 500px;
@@ -282,7 +292,8 @@ td {
     cursor: pointer;
     border-radius: 5px;
     font-size: 1rem;
-    
+    max-width: 90px;
+    gap:100px;
 }
 
 .edit-btn {
