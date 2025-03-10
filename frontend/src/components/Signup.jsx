@@ -88,6 +88,7 @@ const Signup = () => {
     return (
         <div>
             <form className="formcont" onSubmit={handleSubmit}>
+                <h3 className="form-title">SignUp</h3>
                 <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
                 {usernameError && <p style={{ color: "red", fontSize:10 ,textAlign: "left"}}>{usernameError}</p>}
                 <input type="email" name="email" placeholder="Email" onChange={handleChange} required />

@@ -4,12 +4,10 @@ const API_BASE_URL = "http://127.0.0.1:8000";
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  };
+    return token
+        ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+        : { "Content-Type": "application/json" };
+};
 
 export const signup = async (userData) => axios.post(`${API_BASE_URL}/signup/`, userData);
 
@@ -34,25 +32,22 @@ export const resetPassword = async (uid, token, password) => {
 
 export const fetchTasks = async (searchQuery = "", sortOrder = "id", page = 1) => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/tasks?search=${searchQuery}&ordering=${sortOrder}&page=${page}`,
-        getAuthHeaders()
-      );
-      return response.data;
+        const response = await axios.get(
+            `${API_BASE_URL}/tasks?search=${searchQuery}&ordering=${sortOrder}&page=${page}`,
+            { headers: getAuthHeaders() }
+        );
+        return response.data;
     } catch (error) {
-      console.error("Error fetching tasks:", error);
-      throw error;
+        console.error("Error fetching tasks:", error);
+        throw error;
     }
-  };
+};
 
 export const createTask = async (task) => {
     try {
         console.log("Creating Task:", task); 
         const response = await axios.post(`${API_BASE_URL}/tasks/`, task, {
-            headers: {
-                "Content-Type": "application/json",
-                ...getAuthHeaders(),
-            },
+            headers: getAuthHeaders(),
         });
         return response.data;
     } catch (error) {
@@ -63,12 +58,9 @@ export const createTask = async (task) => {
 
 export const updateTask = async (id, task) => {
     try {
-        console.log("Updating Task:", id, task); // Debugging log
+        console.log("Updating Task:", id, task);
         const response = await axios.put(`${API_BASE_URL}/tasks/${id}/`, task, {
-            headers: {
-                "Content-Type": "application/json",
-                ...getAuthHeaders(),
-            },
+            headers: getAuthHeaders(),
         });
         return response.data;
     } catch (error) {
@@ -89,5 +81,3 @@ export const deleteTask = async (id) => {
         throw error;
     }
 };
-
-

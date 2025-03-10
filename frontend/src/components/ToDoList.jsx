@@ -18,7 +18,20 @@ const ToDoList = () => {
     const [prevPage, setPrevPage] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("id");
+    const debouncedSearchQuery = useDebounce(searchQuery, 700);
 
+    function useDebounce(value, delay) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+            return () => {
+                clearTimeout(handler);
+            };
+        }, [value, delay]);
+        return debouncedValue;
+    }
     const handleUnauthorized = () => {
         logoutUser();
     };
@@ -27,7 +40,7 @@ const ToDoList = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetchTasks(searchQuery, sortBy, page);
+            const response = await fetchTasks(debouncedSearchQuery, sortBy, page);
             setTasks(response.results);
             setNextPage(response.next ? page + 1 : null);
             setPrevPage(response.previous ? page - 1 : null);
@@ -49,7 +62,7 @@ const ToDoList = () => {
         } else {
             loadTasks(currentPage);
         }
-    }, [token, searchQuery, sortBy, currentPage]);
+    }, [token, debouncedSearchQuery, sortBy, currentPage]);
 
     const handleCreateTask = async () => {
         if (!newTask.title || !newTask.description) {
@@ -167,7 +180,7 @@ const ToDoList = () => {
                         <option value="-deadline">Deadline (Latest-Earliest)</option>
                     </select>
                 </div>
-                <input
+                <input className="search-container"
                     type="text"
                     placeholder="Search tasks..."
                     value={searchQuery}
